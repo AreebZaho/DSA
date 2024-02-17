@@ -1,0 +1,14 @@
+pair<Node*, Node*> preorder(Node* n) {
+    if (!n) return {NULL, NULL};
+    pair<Node*, Node*> l = preorder(n->left);
+    pair<Node*, Node*> r = preorder(n->right);
+    n->left = NULL;
+    if (l.second) l.second->right = n;
+    n->right = r.first;
+    if (!l.first) l.first = n;
+    if (!r.second) r.second = n;
+    return {l.first, r.second};
+}
+Node *flattenBST(Node *n) {
+    return preorder(n).first;
+}
