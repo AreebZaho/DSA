@@ -1,0 +1,46 @@
+bool check(string a, string b) {
+    if (a.length() > b.length()) return 0;
+    return a == b.substr(0, a.length()) && a == b.substr(b.length() - a.length());
+}
+int countPrefixSuffixPairs(vector<string>& words) {
+    int res = 0;
+    for (int i = 0; i < words.size() - 1; ++i) {
+        for (int j = i + 1; j < words.size(); ++j) {
+            if (check(words[i], words[j])) ++res;
+        }
+    }
+    return res;
+}
+
+char sieve[1000000] = {};
+int mostFrequentPrime(vector<vector<int>>& g) {
+    if (!sieve[4]) {//mark 1 = non prime
+        for (int i = 2; i < 1e6; ++i) {
+            if (!sieve[i]) for (int j = 2 * i; j < 1e6; j += i) sieve[j] = 1;
+        }
+    }
+    int n = g.size(), m = g[0].size();
+    unordered_map<int, int> mp;
+    vector<int> I = {-1,-1,-1,0,0,1,1,1};
+    vector<int> J = {-1,0,1,-1,1,-1,0,1};
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            for (int k = 0; k < 8; ++k) {
+                int x = g[i][j];//single digit nums not needed
+                int dx = J[k], dy = I[k];
+                int ii = i + dy, jj = j + dx;
+                while (ii >= 0 && jj >= 0 && ii < n && jj < m) {
+                    x = x * 10 + g[ii][jj];
+                    if (!sieve[x]) ++mp[x];
+                    ii += dy; jj += dx;
+                }
+            }
+        }
+    }
+    int res = -1; mp[-1] = 0;
+    for (auto i = mp.begin(); i != mp.end(); ++i) {
+        if (i->second > mp[res]) res = i->first;
+        else if (i->second == mp[res]) res = max(res, i->first);
+    }
+    return res;
+}
