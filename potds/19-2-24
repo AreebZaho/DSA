@@ -1,0 +1,21 @@
+int minValue(string s, int k){
+    priority_queue<int> pq;
+    vector<int> v(26, 0);//freq
+    for (char& ch : s) ++v[ch - 97];
+    for (int &i : v) pq.push(i);//max heap
+    while (k--) {
+        int top = pq.top(); pq.pop();
+        if (top > 1) pq.push(top - 1);
+    }
+    //now top k freq chars -- 1 freq so pq contains at max 26 nums adn their sq sum = ans
+    int res = 0;
+    while (!pq.empty()) {
+        res += pq.top() * pq.top();
+        pq.pop();
+    }
+    return res;
+}
+
+public boolean isPowerOfTwo(int n) {
+    return n > 0 && (n & (n-1)) == 0;
+}
