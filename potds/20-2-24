@@ -1,0 +1,47 @@
+class TrieNode {//TLE on leetcode
+public:
+    bool eow;
+    TrieNode* child[26];
+    TrieNode() {
+        eow = 0;
+        for (int i = 0; i < 26; ++i) child[i] = nullptr;
+    }
+};
+TrieNode* root;
+void insert(string s) {
+    TrieNode* curr = root;
+    for (char& ch : s) {
+        if (!curr->child[ch - 97]) curr->child[ch - 97] = new TrieNode();
+        curr = curr->child[ch - 97];
+    }
+    curr->eow = 1;
+}
+bool find(string s, int st, int en) {//start, end indices for substr lookup
+    TrieNode* curr = root;
+    for (int i = st; i <= en; ++i) {
+        char ch = s[i];
+        if (!curr->child[ch - 97]) return 0;
+        curr = curr->child[ch - 97];
+    }
+    return curr->eow;
+}
+bool wordBreak(int n, string s, vector<string>& words) {
+    TrieNode r = *new TrieNode();
+    root = &r;
+    for (string& w : words) insert(w);
+    queue<int> q; q.push(0);
+    while (!q.empty()) {
+        int i = q.front(); q.pop();
+        if (i == s.length()) return 1;
+        for (int j = i; j < s.length(); ++j) {
+            if (find(s, i, j)) q.push(j + 1);
+        }
+    }
+    return 0;
+}
+
+int s = (nums.length + 1) * nums.length / 2;
+for (int i = 0; i < nums.length; i++) {
+    s -= nums[i];
+}
+return s;
